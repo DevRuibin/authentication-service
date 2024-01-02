@@ -1,4 +1,4 @@
-package org.andy.chatfybackend.auth;
+package org.andy.chatfybackend.auth.basic_user;
 
 
 
@@ -28,11 +28,15 @@ public class BasicUser implements UserDetails {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Role role;
-
+    @Builder.Default
+    private Role role = Role.USER;
+    @Builder.Default
     private boolean accountNonExpired=true;
+    @Builder.Default
     private boolean accountNonLocked=true;
+    @Builder.Default
     private boolean credentialsNonExpired=true;
+    @Builder.Default
     private boolean enabled=true;
 
 
