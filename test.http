@@ -1,0 +1,8 @@
+### Send POST request with json body
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmailOrPhone": "ruibin2",
+  "password": "ruibin123"
+}
