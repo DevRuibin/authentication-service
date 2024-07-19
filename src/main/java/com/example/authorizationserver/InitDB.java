@@ -31,7 +31,7 @@ public class InitDB implements CommandLineRunner {
                 .password(passwordEncoder.encode("123"))
                 .email("ruibin.zhang021@icloud.com")
                 .phoneNumber("0123456789")
-                .roles(Set.of(Role.ROLE_USER, Role.ROLE_ADMIN))
+                .roles(Set.of(Role.ROLE_USER))
                 .build();
         repository.save(user);
         log.info("Response: {} ", user);

@@ -66,5 +66,14 @@ public class UserService implements UserDetailsService {
                 .stream()
                 .map((User::toDTO)).toList();
     }
+
+    public UserResponse getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()) {
+            return user.get().toDTO();
+        }else{
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+    }
 }
 

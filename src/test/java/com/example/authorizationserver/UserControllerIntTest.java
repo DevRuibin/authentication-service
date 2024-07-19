@@ -40,10 +40,8 @@ public class UserControllerIntTest {
                 null,
                 new ParameterizedTypeReference<>() {}
         );
-        System.out.println(response.getStatusCode());
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getBody()).isNotNull();
-        System.out.println(response.getBody());
         assertThat(Objects.requireNonNull(response.getBody()).size()).isEqualTo(1);
     }
 

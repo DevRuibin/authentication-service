@@ -1,9 +1,6 @@
 package com.example.authorizationserver;
 
-import com.example.authorizationserver.dto.LoginRequest;
-import com.example.authorizationserver.dto.LoginResponse;
-import com.example.authorizationserver.dto.RegisterRequest;
-import com.example.authorizationserver.dto.RegisterResponse;
+import com.example.authorizationserver.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final AuthorizationService authorizationService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
@@ -26,4 +24,11 @@ public class AuthController {
         String token = userService.register(registerRequest);
         return ResponseEntity.ok(new RegisterResponse(token));
     }
+
+
+    @PostMapping("/authorize")
+    public ResponseEntity<AuthorizationResponse> authorize(@RequestBody AuthorizationRequest authorizationRequest){
+        return ResponseEntity.ok(authorizationService.authorize(authorizationRequest));
+    }
+
 }

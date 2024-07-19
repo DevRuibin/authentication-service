@@ -1,0 +1,12 @@
+api:
+  v1:
+    endpoints:
+      _api_v1_users:
+        path: "/api/v1/users"
+        roles:
+          - ADMIN
+          - USER
+      _api_v1_documents:
+        path: "/api/v1/documents"
+        roles:
+          - ADMIN

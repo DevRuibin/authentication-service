@@ -1,7 +1,6 @@
 package com.example.authorizationserver;
 
-import com.example.authorizationserver.dto.LoginRequest;
-import com.example.authorizationserver.dto.RegisterRequest;
+import com.example.authorizationserver.dto.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -88,6 +89,47 @@ public class AuthControllerIntTest {
         assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response2.getBody()).isNotEmpty();
     }
+
+    @Test
+    void testShouldHaveAccessRightWhenValidTokenAndRole(){
+        String username = "0123456789";
+        String password = "123";
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/api/v1/auth/login", loginRequest, LoginResponse.class);
+        String token = Objects.requireNonNull(response.getBody()).token();
+        System.out.println(token);
+
+        String endpoint = "/api/v1/users";
+        String endpointName = "_api_v1_users";
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest(endpointName, token, endpoint);
+        ResponseEntity<AuthorizationResponse> authorizationResponse = restTemplate.postForEntity("/api/v1/auth/authorize", authorizationRequest, AuthorizationResponse.class);
+        assertThat(authorizationResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(authorizationResponse.getBody()).isNotNull();
+        assertThat(authorizationResponse.getBody().authorized()).isTrue();
+
+//        _api_v1_documents
+    }
+
+
+    @Test
+    void testShouldHaveNoAccessRightWhenInvalidTokenAndRole(){
+        String username = "0123456789";
+        String password = "123";
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/api/v1/auth/login", loginRequest, LoginResponse.class);
+        String token = Objects.requireNonNull(response.getBody()).token();
+        System.out.println(token);
+
+        String endpoint = "/api/v1/documents";
+        String endpointName = "_api_v1_documents";
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest(endpointName, token, endpoint);
+        ResponseEntity<AuthorizationResponse> authorizationResponse = restTemplate.postForEntity("/api/v1/auth/authorize", authorizationRequest, AuthorizationResponse.class);
+        assertThat(authorizationResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(authorizationResponse.getBody()).isNotNull();
+        assertThat(authorizationResponse.getBody().authorized()).isFalse();
+
+    }
+
 
 
 }
