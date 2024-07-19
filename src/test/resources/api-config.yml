@@ -6,6 +6,11 @@ api:
         roles:
           - ADMIN
           - USER
+      get-single-user:
+        path: "^/api/v1/users/(?<username>[^/]+)$"
+        roles:
+          - ADMIN
+          - OWNER
       _api_v1_documents:
         path: "/api/v1/documents"
         roles:

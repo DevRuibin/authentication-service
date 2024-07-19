@@ -130,6 +130,25 @@ public class AuthControllerIntTest {
 
     }
 
+    @Test
+    void testShouldHaveAccessRightWhenOwner(){
+        String username = "0123456789";
+        String password = "123";
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        ResponseEntity<LoginResponse> response = restTemplate.postForEntity("/api/v1/auth/login", loginRequest, LoginResponse.class);
+        String token = Objects.requireNonNull(response.getBody()).token();
+        System.out.println(token);
+
+        String endpoint = "/api/v1/users/ruibin";
+        String endpointName = "get-single-user";
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest(endpointName, token, endpoint);
+        ResponseEntity<AuthorizationResponse> authorizationResponse = restTemplate.postForEntity("/api/v1/auth/authorize", authorizationRequest, AuthorizationResponse.class);
+        assertThat(authorizationResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(authorizationResponse.getBody()).isNotNull();
+        assertThat(authorizationResponse.getBody().authorized()).isTrue();
+
+    }
+
 
 
 }

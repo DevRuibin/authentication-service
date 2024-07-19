@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.aspectj.weaver.tools.cache.SimpleCacheFactory.path;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +35,8 @@ public class AuthorizationService {
             UserDetails user = userService.loadUserByUsername(username);
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
             Set<? extends GrantedAuthority> roles = endpoint.getRoles();
-            boolean hasAccess = authorities.stream()
-                    .anyMatch(roles::contains);
+            boolean hasAccess = checkRoles(authorities, roles);
+            hasAccess = hasAccess || checkOwnerRole(roles, username,authorizationRequest.path(), endpoint);
             UserResponse userResponse = userService.getUserByUsername(username);
             if (hasAccess) {
                 return AuthorizationResponse.builder()
@@ -43,5 +47,18 @@ public class AuthorizationService {
             }
         }
         return AuthorizationResponse.builder().authorized(false).build();
+    }
+
+    private boolean checkRoles(Collection<? extends GrantedAuthority> authorities, Set<? extends GrantedAuthority> roles) {
+        return authorities.stream().anyMatch(roles::contains);
+    }
+
+    private boolean checkOwnerRole(Set<? extends GrantedAuthority> roles, String tokenUsername, String path, ApiConfig.Endpoint endpoint) {
+        Matcher matcher = Pattern.compile(endpoint.getPath()).matcher(path);
+        if (matcher.matches()) {
+            String pathUsername = matcher.group("username");
+            return !roles.contains(new SimpleGrantedAuthority("ROLE_OWNER")) || tokenUsername.equals(pathUsername);
+        }
+        return false;
     }
 }
