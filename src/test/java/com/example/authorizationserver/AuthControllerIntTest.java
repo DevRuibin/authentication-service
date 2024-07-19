@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -146,6 +149,19 @@ public class AuthControllerIntTest {
         assertThat(authorizationResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(authorizationResponse.getBody()).isNotNull();
         assertThat(authorizationResponse.getBody().authorized()).isTrue();
+
+        // Set up the headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        // Create the HttpEntity object with the headers
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // Make the request with headers
+        String url = "/api/v1/users/" + "ruibin";
+        ResponseEntity<UserResponse> userResponseResponseEntity = restTemplate.exchange(url, HttpMethod.GET, entity, UserResponse.class);
+        assertThat(userResponseResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
 
     }
 

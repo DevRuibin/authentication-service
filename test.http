@@ -3,6 +3,13 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "usernameOrEmailOrPhone": "ruibin2",
-  "password": "ruibin123"
+  "usernameOrEmailOrPhone": "ruibin",
+  "password": "123"
 }
+
+
+### Get User by username
+GET http://localhost:8080/api/v1/users/ruibin
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJydWliaW4iLCJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJleHAiOjE3MjE0MDMwNTN9.aJxl5MWhQ6Nw2PzQBj8QpESrcABlb1mi2J0zHQ9GaGcRBkuAmlUm-GHv18pCYkw1
+
